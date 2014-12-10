@@ -34,7 +34,7 @@
 				result = ((inputNum3*val1)/val2).toFixed(2);
 			}else if(bool==0 && bool2!=0){
 				result = ((inputNum3*val1)/thisVal5).toFixed(2);
-			}else if(bool!=0 && bool==0){
+			}else if(bool!=0 && bool2==0){
 				result = ((inputNum3*thisVal)/val2).toFixed(2);
 			}else{
 				result = ((inputNum3*thisVal)/thisVal5).toFixed(2);
@@ -58,7 +58,7 @@
 				result = ((inputNum2*val1)/val2).toFixed(2);
 			}else if(bool==0 && bool2!=0){
 				result = ((inputNum2*val1)/thisVal2).toFixed(2);
-			}else if(bool!=0 && bool==0){
+			}else if(bool!=0 && bool2==0){
 				result = ((inputNum2*firstslt)/val2).toFixed(2);
 			}else{
 				result = ((inputNum2*firstslt)/thisVal2).toFixed(2);
@@ -78,7 +78,7 @@
 			}else if(bool==0 && bool2!=0){
 				result = ((inputNum*val1)/thisVal4).toFixed(2);
 				console.log("2.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +val1,"두번째 셀렉트 환율"+thisVal4," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
-			}else if(bool!=0 && bool==0){
+			}else if(bool!=0 && bool2==0){
 				result = ((inputNum*thisVal3)/val2).toFixed(2);
 				console.log("3.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +thisVal3,"두번째 셀렉트 환율"+val2," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
 			}else{
