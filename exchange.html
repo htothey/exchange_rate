@@ -11,15 +11,15 @@
 	<script>
 	var bool = 0;
 	var bool2 = 0;
-	var thisVal;
-	var numVal;
-	var result;
-	var inputNum;
-	var thisVal2;
+	var thisVal,thisVal,result,inputNum,thisVal2,val1,val2;
+	// var numVal;
+	// var result;
+	// var inputNum;
+	// var thisVal2;
+	// var sCountryCode;
 	$(document).ready(function(){
-		var val1 = parseFloat($('#ecg_ifmt1').val().replace(/\,/g,'')); // 첫번째 셀렉트 초기값
-		var val2 = parseFloat($('#ecg_ifmt2').val().replace(/\,/g,'')); // 두번째 셀렉트 초기값
-
+	val1 = parseFloat($('#ecg_ifmt1').val().replace(/\,/g,'')); // 첫번째 셀렉트 초기값
+	val2 = parseFloat($('#ecg_ifmt2').val().replace(/\,/g,'')); // 두번째 셀렉트 초기값
 		$('#ecg_ifmt1').change(function(){ //나라 선택할 때
 			bool = 1; //셀렉트 체인지가 이루어질때 불린값 설정
 			thisVal = parseFloat($(this).val().replace(/\,/g,'')); // 입력할 나라돈
@@ -29,17 +29,26 @@
 			sCountryCode = countryCode.toLowerCase(); // 도시이름 소문자
 			$(this).next('.flag').removeClass().addClass('flag').addClass(sCountryCode);
 			$(this).next().next('._unit').text(countryCode);
+			if(!inputNum3) return false;
 
 			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
 				result = ((inputNum3*val1)/val2).toFixed(2);
+				console.log("1")
 			}else if(bool==0 && bool2!=0){
 				result = ((inputNum3*val1)/thisVal5).toFixed(2);
+				console.log("2")
 			}else if(bool!=0 && bool2==0){
 				result = ((inputNum3*thisVal)/val2).toFixed(2);
+				console.log("3")
 			}else{
 				result = ((inputNum3*thisVal)/thisVal5).toFixed(2);
+				console.log("4")
 			}
-			$("#num2").val(result);
+			$("#num2").val(result.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')); //3자리마다 콤마찍기
+
+
+			countryUnit();
+			console.log(result, inputNum3, thisVal, val2)
 		});
 
 		$('#ecg_ifmt2').change(function(){
@@ -53,7 +62,7 @@
 
 			$(this).next('.flag').removeClass().addClass('flag').addClass(sCountryCode2);
 			$(this).next().next('._unit').text(countryCode2);
-
+			if(!inputNum2) return false;
 			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
 				result = ((inputNum2*val1)/val2).toFixed(2);
 			}else if(bool==0 && bool2!=0){
@@ -63,8 +72,10 @@
 			}else{
 				result = ((inputNum2*firstslt)/thisVal2).toFixed(2);
 			}
-			$("#num2").val(result);
-			console.log(firstslt);
+
+			$("#num2").val(result.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')); //3자리마다 콤마찍기
+
+			// console.log(firstslt);
 		});
 
 		$("#num").keyup(function(){  // 입력했다 띨때 이벤트작동
@@ -72,6 +83,8 @@
 			thisVal4 = thisVal2; //두번째 셀렉트 환율
 			inputNum = parseFloat($(this).val().replace(/\,/g,'')); //입력값
 			console.log(bool ,bool2);
+
+			// $(this).value = inputNum.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
 			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
 				result = ((inputNum*val1)/val2).toFixed(2);
 				console.log("1.값 입력시: bool 0 result "+result," 첫번째 셀렉트 환율 " +val1,"두번째 셀렉트 환율"+val2," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
@@ -85,10 +98,43 @@
 				result = ((inputNum*thisVal3)/thisVal4).toFixed(2);
 				console.log("4.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +thisVal3,"두번째 셀렉트 환율"+thisVal4," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
 			}
-			$("#num2").val(result);
+
+			$("#num2").val(result.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,')); //3자리마다 콤마찍기
+
 		});
 
+		$("#num").on("focus click",function(){ //입력창에 포커스나 클릭될시 0값이 있으면 지워짐
+			if($(this).val()==0) $(this).val('');
+		});
+		$("#num").on("focusout",function(){ //입력창에 포커스 아웃되면서 값이 없으면 다시 0을 반환
+			if($(this).val()==false) $(this).val("0");
+		})
+
+
 	});
+
+	function comma(str) {	//콤마찍기
+	    str = String(str);
+	    return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+	}
+	function uncomma(str) { //콤마빼기
+	    str = String(str);
+	    return str.replace(/[^\d]+/g, '');
+	}
+	function inputNumberFormat(obj) {  //입력 콤마찍기
+	    obj.value = comma(uncomma(obj.value));
+	}
+	function countryUnit() {
+		var ctryUnit = sCountryCode;
+		ctryUnit = String(ctryUnit);
+		if(ctryUnit=="usd"){
+			return ctryUnit.replace("달러")
+		}else if(ctryUnit=="krw"){
+			return ctryUnit.replace("원")
+		}
+		console.log(ctryUnit);
+	}
+
 	</script>
 </head>
 <body>
@@ -153,7 +199,7 @@
 					</div>
 					<div class="num">
 						<label for="num" class="nc">환율을 변환하는 국가를 선택</label>
-						<input id="num" type="text" maxlength="" value="0">
+						<input id="num" type="text" maxlength="" value="0" onkeyup="inputNumberFormat(this)">
 						<div class="recite">
 							<span class="nb_txt _l_unit">0 달러</span>
 						</div>
@@ -215,7 +261,7 @@
 					</div>
 					<div class="num">
 						<label for="num2" class="nc">환율을 변환하는 국가를 선택</label>
-						<input id="num2" type="text" maxlength="" value="0">
+						<input id="num2" type="text" maxlength="" value="0" readonly onkeyup="inputNumberFormat(this)">
 						<div class="recite">
 							<span class="nb_txt _r_unit">0.00 원</span>
 						</div>
