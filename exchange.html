@@ -23,13 +23,23 @@
 		$('#ecg_ifmt1').change(function(){ //나라 선택할 때
 			bool = 1; //셀렉트 체인지가 이루어질때 불린값 설정
 			thisVal = parseFloat($(this).val().replace(/\,/g,'')); // 입력할 나라돈
-
+			var inputNum3 = inputNum;
+			var thisVal5 = thisVal2;
 			countryCode = $(this).children(":selected").attr('data-unit'); // 도시이름 대문자
 			sCountryCode = countryCode.toLowerCase(); // 도시이름 소문자
 			$(this).next('.flag').removeClass().addClass('flag').addClass(sCountryCode);
 			$(this).next().next('._unit').text(countryCode);
 
-			console.log(thisVal);
+			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
+				result = ((inputNum3*val1)/val2).toFixed(2);
+			}else if(bool==0 && bool2!=0){
+				result = ((inputNum3*val1)/thisVal5).toFixed(2);
+			}else if(bool!=0 && bool==0){
+				result = ((inputNum3*thisVal)/val2).toFixed(2);
+			}else{
+				result = ((inputNum3*thisVal)/thisVal5).toFixed(2);
+			}
+			$("#num2").val(result);
 		});
 
 		$('#ecg_ifmt2').change(function(){
