@@ -7,17 +7,91 @@
 	<meta name="description" lang="ko" content="'환율'의 네이버 통합검색 결과입니다.">
 	<title>환율 : 네이버 통합검색</title>
 	<link rel="stylesheet" href="css/exchangerate.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+	var bool = 0;
+	var bool2 = 0;
+	var thisVal;
+	var numVal;
+	var result;
+	var inputNum;
+	var thisVal2;
+	$(document).ready(function(){
+		var val1 = parseFloat($('#ecg_ifmt1').val().replace(/\,/g,'')); // 첫번째 셀렉트 초기값
+		var val2 = parseFloat($('#ecg_ifmt2').val().replace(/\,/g,'')); // 두번째 셀렉트 초기값
+
+		$('#ecg_ifmt1').change(function(){ //나라 선택할 때
+			bool = 1; //셀렉트 체인지가 이루어질때 불린값 설정
+			thisVal = parseFloat($(this).val().replace(/\,/g,'')); // 입력할 나라돈
+
+			countryCode = $(this).children(":selected").attr('data-unit'); // 도시이름 대문자
+			sCountryCode = countryCode.toLowerCase(); // 도시이름 소문자
+			$(this).next('.flag').removeClass().addClass('flag').addClass(sCountryCode);
+			$(this).next().next('._unit').text(countryCode);
+
+			console.log(thisVal);
+		});
+
+		$('#ecg_ifmt2').change(function(){
+			bool2 = 1; //셀렉트 체인지가 이루어질 때 불린값 설정
+			var inputNum2 = inputNum; // 입력한 나라돈
+			var firstslt = thisVal; // 첫번째 셀렉트 환율
+			thisVal2 = parseFloat($(this).val().replace(/\,/g,'')); // 두번째 셀렉트 환율
+
+			countryCode2 = $(this).children(":selected").attr('data-unit'); // 도시이름 대문자
+			sCountryCode2 = countryCode2.toLowerCase(); // 도시이름 소문자
+
+			$(this).next('.flag').removeClass().addClass('flag').addClass(sCountryCode2);
+			$(this).next().next('._unit').text(countryCode2);
+
+			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
+				result = ((inputNum2*val1)/val2).toFixed(2);
+			}else if(bool==0 && bool2!=0){
+				result = ((inputNum2*val1)/thisVal2).toFixed(2);
+			}else if(bool!=0 && bool==0){
+				result = ((inputNum2*firstslt)/val2).toFixed(2);
+			}else{
+				result = ((inputNum2*firstslt)/thisVal2).toFixed(2);
+			}
+			$("#num2").val(result);
+			console.log(firstslt);
+		});
+
+		$("#num").keyup(function(){  // 입력했다 띨때 이벤트작동
+			thisVal3 = thisVal;  //// 첫번째 셀렉트 환율
+			thisVal4 = thisVal2; //두번째 셀렉트 환율
+			inputNum = parseFloat($(this).val().replace(/\,/g,'')); //입력값
+			console.log(bool ,bool2);
+			if(bool==0 && bool2==0){ //셀렉트 체인지가 없을때
+				result = ((inputNum*val1)/val2).toFixed(2);
+				console.log("1.값 입력시: bool 0 result "+result," 첫번째 셀렉트 환율 " +val1,"두번째 셀렉트 환율"+val2," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
+			}else if(bool==0 && bool2!=0){
+				result = ((inputNum*val1)/thisVal4).toFixed(2);
+				console.log("2.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +val1,"두번째 셀렉트 환율"+thisVal4," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
+			}else if(bool!=0 && bool==0){
+				result = ((inputNum*thisVal3)/val2).toFixed(2);
+				console.log("3.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +thisVal3,"두번째 셀렉트 환율"+val2," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
+			}else{
+				result = ((inputNum*thisVal3)/thisVal4).toFixed(2);
+				console.log("4.값 입력시: bool 1 result "+result," 첫번째 셀렉트 환율 " +thisVal3,"두번째 셀렉트 환율"+thisVal4," 립력한 나라돈 "+inputNum +":::"+ bool, bool2)
+			}
+			$("#num2").val(result);
+		});
+
+	});
+	</script>
 </head>
 <body>
 	<div class="csu_hh cs_exchangerate">
 		<div class="cont_area">
-			<h2>환율 정보</h2>	
-			                                                                                                                                        
+			<h2>환율 정보</h2>
+
 			<div class="excr_cal">
-				<div class="excr_box">
+				<div class="excr_box" id="select1">
 					<div class="slc_box">
-						<label for="ecg_ifmt" class="nc">환율을 계산할 국가를 선택</label>
-						<select class="nt_slc">
+						<label for="ecg_ifmt1" class="nc">환율을 계산할 국가를 선택</label>
+						<!-- onchange="exchange_init(this.options[this.selectedIndex].value)"  -->
+						<select class="nt_slc" id="ecg_ifmt1" >
 							<option value="1" data-unit="KRW">대한민국</option>
 							<option value="1,120.00" selected="" data-unit="USD">미국</option>
 							<option value="9.2318" data-unit="JPY">일본</option>
@@ -76,7 +150,7 @@
 					</div>
 				</div>
 				<div class="excr_eq"><span>전환</span></div>
-				<div class="excr_box _exchr_cal_inp">
+				<div class="excr_box">
 					<div class="slc_box">
 						<label for="ecg_ifmt2" class="nc">환율을 변환하는 국가를 선택</label>
 						<select class="nt_slc" id="ecg_ifmt2">
